@@ -1,15 +1,15 @@
 // элементы в DOM можно получить при помощи функции querySelector
 const fruitsList = document.querySelector('.fruits__list'); // список карточек
-const shuffleButton = document.querySelector('.shuffle__btn'); // кнопка перемешивания
-const filterButton = document.querySelector('.filter__btn'); // кнопка фильтрации
-const sortKindLabel = document.querySelector('.sort__kind'); // поле с названием сортировки
-const sortTimeLabel = document.querySelector('.sort__time'); // поле с временем сортировки
-const sortChangeButton = document.querySelector('.sort__change__btn'); // кнопка смены сортировки
-const sortActionButton = document.querySelector('.sort__action__btn'); // кнопка сортировки
-const kindInput = document.querySelector('.kind__input'); // поле с названием вида
-const colorInput = document.querySelector('.color__input'); // поле с названием цвета
-const weightInput = document.querySelector('.weight__input'); // поле с весом
-const addActionButton = document.querySelector('.add__action__btn'); // кнопка добавления
+      shuffleButton = document.querySelector('.shuffle__btn'); // кнопка перемешивания
+      filterButton = document.querySelector('.filter__btn'); // кнопка фильтрации
+      sortKindLabel = document.querySelector('.sort__kind'); // поле с названием сортировки
+      sortTimeLabel = document.querySelector('.sort__time'); // поле с временем сортировки
+      sortChangeButton = document.querySelector('.sort__change__btn'); // кнопка смены сортировки
+      sortActionButton = document.querySelector('.sort__action__btn'); // кнопка сортировки
+      kindInput = document.querySelector('.kind__input'); // поле с названием вида
+      colorInput = document.querySelector('.color__input'); // поле с названием цвета
+      weightInput = document.querySelector('.weight__input'); // поле с весом
+      addActionButton = document.querySelector('.add__action__btn'); // кнопка добавления
 
 // список фруктов в JSON формате
 let fruitsJSON = `[
@@ -26,18 +26,18 @@ let fruits = JSON.parse(fruitsJSON);
 /*** ОТОБРАЖЕНИЕ ***/
 
 // отрисовка карточек
-const display = () => {
-  // TODO: очищаем fruitsList от вложенных элементов,
-  // чтобы заполнить актуальными данными из fruits
+const display = (fruits) => {
+  fruitsList.innerHTML = ''; //очищаем список
 
   for (let i = 0; i < fruits.length; i++) {
-    // TODO: формируем новый элемент <li> при помощи document.createElement,
-    // и добавляем в конец списка fruitsList при помощи document.appendChild
+    const li = document.createElement('li'); //формируем новый элемент <li> при помощи document.createElement,
+    li.textContent = `${fruits[i].kind}, ${fruits[i].color}, ${fruits[i].weight}`;
+    fruitsList.appendChild(li)// и добавляем в конец списка fruitsList при помощи document.appendChild
   }
 };
 
 // первая отрисовка карточек
-display();
+display(fruits);
 
 /*** ПЕРЕМЕШИВАНИЕ ***/
 
