@@ -31,7 +31,16 @@ const display = (fruits) => {
 
   for (let i = 0; i < fruits.length; i++) {
     const li = document.createElement('li'); //формируем новый элемент <li> при помощи document.createElement,
-    li.textContent = `${fruits[i].kind}, ${fruits[i].color}, ${fruits[i].weight}`;
+    li.classList.add('fruit_item');
+    li.innerHTML = `
+          <div class="fruit_info">
+                <div>index: ${i}</div>
+                <div>kind: ${fruits[i].kind}</div>
+                <div>color: ${fruits[i].color}</div>
+                <div>weight (кг): ${fruits[i].weight}</div>
+          </div>
+          `;
+    //li.textContent = `${fruits[i].kind}, ${fruits[i].color}, ${fruits[i].weight}`;
     fruitsList.appendChild(li)// и добавляем в конец списка fruitsList при помощи document.appendChild
   }
 };
