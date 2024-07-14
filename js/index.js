@@ -27,21 +27,43 @@ let fruits = JSON.parse(fruitsJSON);
 
 // отрисовка карточек
 const display = (fruits) => {
-  fruitsList.innerHTML = ''; //очищаем список
+  fruitsList.innerHTML = ''; // очищаем список
 
   for (let i = 0; i < fruits.length; i++) {
-    const li = document.createElement('li'); //формируем новый элемент <li> при помощи document.createElement,
-    li.classList.add('fruit_item');
+    const li = document.createElement('li'); // формируем новый элемент <li> при помощи document.createElement,
+    li.classList.add('fruit__item'); // исправлено на 'fruit__item'
+    
+    // добавляем класс в зависимости от цвета
+    switch (fruits[i].color) {
+      case 'фиолетовый':
+        li.classList.add('fruit_violet');
+        break;
+      case 'зеленый':
+        li.classList.add('fruit_green');
+        break;
+      case 'розово-красный':
+        li.classList.add('fruit_carmazin');
+        break;
+      case 'желтый':
+        li.classList.add('fruit_yellow');
+        break;
+      case 'светло-коричневый':
+        li.classList.add('fruit_lightbrown');
+        break;
+      case 'черный':
+        li.classList.add('fruit_black');
+      break;
+    }
+
     li.innerHTML = `
-          <div class="fruit_info">
-                <div>index: ${i}</div>
-                <div>kind: ${fruits[i].kind}</div>
-                <div>color: ${fruits[i].color}</div>
-                <div>weight (кг): ${fruits[i].weight}</div>
-          </div>
-          `;
-    //li.textContent = `${fruits[i].kind}, ${fruits[i].color}, ${fruits[i].weight}`;
-    fruitsList.appendChild(li)// и добавляем в конец списка fruitsList при помощи document.appendChild
+      <div class="fruit__info">
+        <div>index: ${i}</div>
+        <div>kind: ${fruits[i].kind}</div>
+        <div>color: ${fruits[i].color}</div>
+        <div>weight (кг): ${fruits[i].weight}</div>
+      </div>
+    `;
+    fruitsList.appendChild(li); // и добавляем в конец списка fruitsList при помощи document.appendChild
   }
 };
 
@@ -70,10 +92,10 @@ const shuffleFruits = () => {
   то catch выведет alert
  */
 shuffleButton.addEventListener('click', () => {
-  try{
+  try {
     shuffleFruits();
-  }catch (error){
-    alert('Упс, что-то пошло не так... ' + error)
+  } catch (error) {
+    alert('Упс, что-то пошло не так... ' + error);
   }
 });
 
@@ -81,7 +103,9 @@ shuffleButton.addEventListener('click', () => {
 
 // фильтрация массива
 const filterFruits = () => {
-  fruits = fruits.filter(fruit => fruit.weight <= 25);
+  const minWeight = parseInt(document.querySelector('.minweight__input').value, 10);
+  const maxWeight = parseInt(document.querySelector('.maxweight__input').value, 10);
+  fruits = fruits.filter(fruit => fruit.weight >= minWeight && fruit.weight <= maxWeight);
   display(fruits);
 };
 
@@ -100,12 +124,12 @@ const comparationColor = (a, b) => {
 const sortAPI = {
   bubbleSort(arr, comparation) {
     let n = arr.length;
-    for (let i = 0; i < n-1; i++) {
-      for (let j = 0; j < n-i-1; j++) {
-        if (comparation(arr[j], arr[j+1]) > 0) {
+    for (let i = 0; i < n - 1; i++) {
+      for (let j = 0; j < n - i - 1; j++) {
+        if (comparation(arr[j], arr[j + 1]) > 0) {
           let temp = arr[j];
-          arr[j] = arr[j+1];
-          arr[j+1] = temp;
+          arr[j] = arr[j + 1];
+          arr[j + 1] = temp;
         }
       }
     }
@@ -115,11 +139,11 @@ const sortAPI = {
     if (arr.length <= 1) {
       return arr;
     }
-  
+
     const pivot = arr[0];
     const left = [];
     const right = [];
-  
+
     for (let i = 1; i < arr.length; i++) {
       if (comparation(arr[i], pivot) < 0) {
         left.push(arr[i]);
@@ -127,15 +151,19 @@ const sortAPI = {
         right.push(arr[i]);
       }
     }
-  
+
     return this.quickSort(left, comparation).concat(pivot, this.quickSort(right, comparation));
   },
 
   startSort(sort, arr, comparation) {
     const start = performance.now();
-    this[sort](arr, comparation)    
-      const end = performance.now();
-      let sortTime = `${end - start} ms`;
+    if (sort === 'quickSort') {
+      arr = this.quickSort(arr, comparation);
+    } else {
+      this.bubbleSort(arr, comparation);
+    }
+    const end = performance.now();
+    sortTime = `${end - start} ms`;
   },
 };
 
@@ -151,21 +179,27 @@ sortChangeButton.addEventListener('click', () => {
 
 sortActionButton.addEventListener('click', () => {
   sortTimeLabel.textContent = 'sorting...';
-  const start = performance.now();
-  sortKind === 'bubbleSort' ? bubbleSort(fruits, comparationColor) : quickSort(fruits, comparationColor);
-  const end = performance.now();
-  sortTimeLabel.textContent = `${end - start} ms`;
+  sortAPI.startSort(sortKind, fruits, comparationColor);
+  sortTimeLabel.textContent = sortTime;
   display(fruits);
 });
 
 /*** ДОБАВИТЬ ФРУКТ ***/
 
 addActionButton.addEventListener('click', () => {
-  const newFruit = {
-    kind: kindInput.value,
-    color: colorInput.value,
-    weight: parseInt(weightInput.value, 10)
-  };
-  fruits.push(newFruit);
-  display(fruits);
+  const kind = kindInput.value.trim();
+  const color = colorInput.value.trim();
+  const weight = parseInt(weightInput.value.trim(), 10);
+
+  if (kind && color && !isNaN(weight)) {
+    const newFruit = {
+      kind: kind,
+      color: color,
+      weight: weight
+    };
+    fruits.push(newFruit);
+    display(fruits);
+  } else {
+    alert('Пожалуйста, введите корректные данные для нового фрукта.');
+  }
 });
